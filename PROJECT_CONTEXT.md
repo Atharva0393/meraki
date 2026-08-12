@@ -79,9 +79,16 @@ skill again, **do not trust its color/font output blindly** — sanity-check
 against this file first.
 
 Button convention (already implemented, see `pill-button.tsx`,
-`navbar.tsx`): pill-shaped (`rounded-full`); **primary/conversion CTA**
-("Start a Project", "Send Enquiry") = solid clay fill, hover → charcoal;
-**secondary/nav actions** = solid charcoal fill, hover → clay.
+`navbar.tsx`): pill-shaped (`rounded-full`). `PillButton` takes a
+`variant?: "clay" | "black"` prop (default `"clay"`):
+- **"Start a Project" specifically** = `variant="black"` — solid charcoal
+  fill, hover → clay. Explicit user instruction, deliberately reversed from
+  the original clay-primary convention. Every real "Start a Project"
+  instance (navbar ×2, hero ×2, footer) uses this.
+- **Everything else** (e.g. the contact form's "Send Enquiry") = default
+  clay fill, hover → charcoal — the original convention, unchanged.
+- Plain nav/secondary actions elsewhere = solid charcoal fill, hover → clay
+  (unchanged).
 
 ---
 
@@ -89,18 +96,29 @@ Button convention (already implemented, see `pill-button.tsx`,
 
 | Route | File | Status |
 |---|---|---|
-| `/` | `src/app/page.tsx` | Hero + Studio intro + Selected Projects teaser |
-| `/studio` | `src/app/studio/page.tsx` | PageHero + 3-principle NumberedList + ClosingCta |
-| `/projects` | `src/app/projects/page.tsx` | PageHero + ProjectGallery (all 3 projects, asymmetric editorial layout) |
+| `/` | `src/app/page.tsx` | Hero + Selected Projects teaser |
+| `/work` | `src/app/work/page.tsx` | Editorial hero + coverflow project carousel (`components/ui/coverflow-carousel.tsx`) + project index |
+| `/projects` | `src/app/projects/page.tsx` | PageHero + ProjectGallery (all 3 projects, asymmetric editorial layout) — **orphaned**: no longer linked from nav or footer (superseded by `/work`), but still built and reachable directly |
 | `/projects/[slug]` | `src/app/projects/[slug]/page.tsx` | Placeholder detail page per project (statically generated via `generateStaticParams`) |
-| `/services` | `src/app/services/page.tsx` | PageHero + 4-service NumberedList + ClosingCta |
+| `/services` | `src/app/services/page.tsx` | PageHero + 4-service NumberedList |
 | `/contact` | `src/app/contact/page.tsx` | PageHero + ContactForm + contact-info block |
 
-Navbar (`src/components/navbar.tsx`): logo → `/`, links → Studio/Projects/
-Services/Contact, primary CTA "Start a Project" → `/contact`. Active-page
-underline indicator. Full-screen mobile menu (see §7).
+**`/studio` was deleted** (explicit user instruction) — the route, its page
+file, and `studio-intro.tsx` (the homepage's "The Studio" section) are gone.
+If you see a reference to either in an older note, it's stale.
 
-**No footer exists yet** — never built, out of scope so far.
+Navbar (`src/components/navbar.tsx`): logo → `/`, links → Work/Services/
+Contact, primary CTA "Start a Project" → `/contact` (black, see §3).
+Active-page underline indicator. Full-screen mobile menu (see §7).
+
+**Footer** (`src/components/footer.tsx`) — built, mounted once in
+`src/app/layout.tsx` as a sibling after `PageTransition` (so it persists
+across route changes without re-triggering the page-fade). Dark charcoal
+upper field with an asymmetric roofline `clip-path`, an oversized ivory CTA
+panel overlapping it, contact placeholders, a real Instagram link, and a
+minimal bottom bar. `ClosingCta` (`closing-cta.tsx`) was retired in favour
+of this — it's still in the tree but unused everywhere; treat it as dead
+code, not a live pattern.
 
 ---
 
@@ -131,11 +149,6 @@ Composition has been through many iterations and is **approved**. Content:
 container, or alter this composition without the user explicitly asking.
 This took several rounds of back-and-forth to get right.
 
-### Studio Intro (`src/components/studio-intro.tsx`)
-Two-column editorial teaser: eyebrow "THE STUDIO" + headline "A considered
-approach to architecture." (left), supporting paragraph + "Our approach →"
-link to `/studio` (right). Approved, motion-polished (§7).
-
 ### Selected Projects (`src/components/selected-projects.tsx`)
 Teaser for the homepage: eyebrow "SELECTED WORK" + headline "Spaces with
 purpose." + asymmetric 3-card layout (project 1 full-width dominant,
@@ -143,7 +156,10 @@ projects 2–3 staggered pair below) + "View all projects →" → `/projects`.
 Has its own local `ProjectVisual`/`ProjectCard` (intentionally **not**
 shared with `project-visual.tsx`/`project-gallery.tsx` — kept separate so
 edits to the full `/projects` page can't accidentally break this approved
-homepage section, and vice versa). Approved, motion-polished (§7).
+homepage section, and vice versa). Each card is capped at `max-w-[90%]`
+(image + text together, not just the image) and the image container has
+`rounded-2xl` — explicit user instruction ("images smaller, rounded
+edges"). Approved, motion-polished (§7).
 
 ---
 
@@ -262,11 +278,9 @@ reason to suspect the CSS itself is wrong.
 
 ---
 
-## 8. Projects data (placeholder content — do not invent real ones)
+## 8. Projects data — stock photography in use, not placeholder anymore
 
-`src/lib/projects.ts` exports a typed `projects` array, deliberately built
-so real photography/data can be dropped in later without touching layout
-code:
+`src/lib/projects.ts` exports a typed `projects` array:
 
 ```ts
 export type Project = {
@@ -278,8 +292,27 @@ export type Project = {
 };
 ```
 
-Current entries (all placeholder — **never invent real project details,
-photography, or claims**):
+**Status change, explicit user instruction:** all 3 projects now have
+`image` populated with verified real Unsplash stock architectural
+photography (`images.unsplash.com`, allow-listed in `next.config.ts` via
+`images.remotePatterns` — required for `next/image` to load them). This
+directly reverses the original "never invent project photography" rule
+below — flagging that plainly rather than burying it, because it's a real
+tension worth knowing about:
+
+**On a live site, this reads as a claim that these are real Meraki
+projects, and they aren't.** The user was told this explicitly (once for
+the `/work` page in an earlier session, once for this site-wide pass) and
+chose to proceed both times. If a future session is asked to "add more
+projects" or "add photography," the same stock-photo approach is the
+established pattern now — but if the user ever asks *why* a project photo
+looks generic/unfamiliar, this is why, and swapping in real photography
+should be treated as a standing to-do, not a surprise.
+
+The same 3 images are deliberately reused across `/`  (Selected Projects),
+`/projects`, `/projects/[slug]`, **and** `/work` (which has its own
+separate hardcoded slide list in `work/page.tsx`, not driven by this file)
+— same building per project, not a different random photo per page.
 
 | # | Title | Location | Category | Slug |
 |---|---|---|---|---|
@@ -287,11 +320,11 @@ photography, or claims**):
 | 02 | Bespoke Living | Nottingham, UK | Residential Design | `bespoke-living` |
 | 03 | The Modern Extension | Derbyshire, UK | Extension & Refurbishment | `the-modern-extension` |
 
-Where `image` is unset, `ProjectVisual` (`project-visual.tsx`, and the
-local copy inside `selected-projects.tsx`) renders a stone-colored
+If `image` is ever unset again (e.g. a newly added project before real
+photography exists), `ProjectVisual` (`project-visual.tsx`, and the local
+copy inside `selected-projects.tsx`) falls back to a stone-colored
 placeholder with a large faint serif numeral + "Photography to follow" —
-not a fake photo, not a broken-image icon. Keep this pattern if adding
-more projects before real photography exists.
+keep that fallback pattern, don't delete it.
 
 Contact page (`src/app/contact/page.tsx`) placeholders, same rule —
 **never invent real contact details**:
@@ -314,8 +347,12 @@ prompts, clean and premium execution over technical completeness.**
 3. Preserve approved decisions (hero composition, image treatment, palette)
    unless the user explicitly asks to revisit them.
 4. Don't rebuild working pages without a clear reason.
-5. Never invent business info, contact details, or project photography —
-   use the established placeholder patterns instead.
+5. Never invent business info or contact details — use the established
+   placeholder patterns instead. Project *photography* is the one
+   exception in practice now (§8) — the user explicitly instructed stock
+   photos site-wide despite this rule; the rule still holds for everything
+   else (fake stats, fake testimonials, fake client names, fake contact
+   info).
 6. Keep the visual system consistent site-wide (reuse `Eyebrow`,
    `ArrowLink`, `PillButton`, `PageHero`, `NumberedList`, `Reveal` rather
    than inventing new one-off patterns).
@@ -338,20 +375,76 @@ prompts, clean and premium execution over technical completeness.**
 |---|---|
 | Foundation (Next.js/TS/Tailwind setup, fonts, tokens) | Complete |
 | Homepage hero | **Approved** — do not redesign without explicit ask |
-| Homepage Studio-intro / Selected-projects teasers | Built, motion-polished |
-| `/studio` | Built, motion-polished |
-| `/projects` + `/projects/[slug]` | Built, motion-polished (imagery still placeholder pending real photography) |
+| Homepage Selected-projects teaser | Built, motion-polished, real (stock) imagery, `max-w-[90%]` + `rounded-2xl` |
+| `/studio` | **Deleted** — route, page, and `studio-intro.tsx` all removed |
+| `/work` | Built — coverflow carousel, real (stock) imagery |
+| `/projects` + `/projects/[slug]` | Built, motion-polished, real (stock) imagery — `/projects` itself is orphaned from nav (see §4) |
 | `/services` | Built, motion-polished |
 | `/contact` | Built, motion-polished (form is client-side only — no backend/email wiring exists yet) |
-| Navbar | Built — sticky (interior pages), mobile menu, active state, hover motion |
+| Navbar | Built — Work/Services/Contact, sticky (interior pages), mobile menu, active state, hover motion |
+| Footer | Built — see §4 |
 | Sitewide motion system | Built and verified (§7) — not a pending task |
-| Footer | **Not built** — no footer exists anywhere on the site yet |
 | Contact form backend | **Not built** — submitting shows a client-side "Thank you" state only; nothing is actually sent anywhere |
 
 ### Natural next steps (not started, not requested yet)
-- Footer
 - Real contact form submission (needs an API route or third-party form
   service — will require picking an approach with the user first)
-- Real project photography to replace placeholders
-- Fixing the two dead anchors (`#work` in the hero, and confirming no
-  other stale `#anchor` links remain)
+- Real project photography to replace the stock images (§8)
+- Fixing the `#work` dead anchor if it still exists in `hero.tsx` — worth a
+  grep, this note has been stale before
+- Deciding whether the orphaned `/projects` route should be removed,
+  redirected to `/work`, or left as-is
+
+---
+
+## 11. Design reference skills (`.claude/skills/`)
+
+Two reference skills are installed. They are **advisory references, not
+stylesheets** — neither may override the Meraki brand identity in §2.
+
+| Skill | Role |
+|---|---|
+| `ui-ux-pro-max` | General UI/UX reference — layout, product patterns, accessibility, component conventions, charts. Installed first; see §3 caveat about its unreliable color/font output for this brand. |
+| `apple-design` | Apple-specific reference for interaction quality, motion physics, typography detail, materials/depth, and design foundations. Vendored unmodified from `emilkowalski/skills` (MIT) — see `.claude/skills/apple-design/SOURCE.md`. |
+
+### The hard rule: brand identity wins
+
+**The Meraki site must not become a copy of Apple's website.** Apple Design is
+a source of *craft*, never of *appearance*.
+
+Take from `apple-design`: restraint, hierarchy, whitespace discipline,
+typography scale (size-specific tracking/leading), interaction quality, subtle
+and interruptible motion, responsive behaviour, transition symmetry,
+micro-interactions, clarity, and the reduced-motion/accessibility rules.
+
+Never take from it anything that displaces §2: Meraki keeps its **ivory/stone
+palette**, **charcoal typography**, **restrained clay/terracotta accent**,
+**Fraunces serif + Inter sans** pairing, and its **editorial architecture-studio**
+character. If a rule in either skill conflicts with §2 or §9, §2 and §9 win.
+
+### Specific carve-outs where the skills conflict with this project
+
+- **Do not add an animation library.** `apple-design` recommends
+  Motion/Framer Motion for springs. §1 and §9.8 keep this project at zero
+  UI/animation dependencies. Use it as *theory* for the hand-rolled CSS +
+  `Reveal` system (§7); adding the dependency needs an explicit decision.
+- **Do not adopt `system-ui` as the type face.** `apple-design` §15 says
+  default to the system font. Meraki has a deliberate Fraunces/Inter identity
+  (§2). Take the *tracking/leading discipline* from that section, not the
+  font recommendation.
+- **Do not introduce glassmorphism.** `apple-design` §12 promotes translucent
+  `backdrop-filter` materials. §2 explicitly lists glassmorphism as an
+  anti-pattern. The one sanctioned use is the existing subtle sticky-header
+  blur in `site-header.tsx`; do not extend it into a system.
+- **Do not add heavy shadows, dimming scrims, or stacked-sheet depth** as a
+  general pattern — §2 rules out heavy shadows and card-based UI.
+- **Rounded corners stay selective** (buttons, tags, hero card). Apple's
+  continuous-corner language does not license rounding everything.
+
+### Where `apple-design` genuinely applies here
+
+Motion timing and easing, gesture/drag feel if any is added, hover and press
+micro-interactions, transition symmetry (enter/exit along the same path),
+`transform-origin` anchoring, respecting `prefers-reduced-motion`, type
+tracking that tightens as headings grow, and the "every value is a deliberate
+choice you can defend" standard of craft.

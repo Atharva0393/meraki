@@ -51,10 +51,12 @@ function ProjectCard({
   return (
     <Link
       href={`/projects/${project.slug}`}
-      className={`group block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-charcoal ${className}`}
+      className={`group block max-w-[90%] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-charcoal ${className}`}
     >
       <Reveal variant="scale">
-        <div className={`relative w-full overflow-hidden ${aspect}`}>
+        <div
+          className={`relative w-full overflow-hidden rounded-2xl ${aspect}`}
+        >
           <ProjectVisual project={project} index={index} />
         </div>
       </Reveal>

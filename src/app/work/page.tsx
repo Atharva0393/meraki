@@ -3,7 +3,6 @@ import { SiteHeader } from "@/components/site-header";
 import { Eyebrow } from "@/components/eyebrow";
 import { ArrowLink } from "@/components/arrow-link";
 import { Reveal } from "@/components/reveal";
-import { ClosingCta } from "@/components/closing-cta";
 import {
   CoverflowCarousel,
   type CoverflowSlide,
@@ -135,12 +134,6 @@ export default function WorkPage() {
           </ul>
         </div>
       </div>
-
-      <ClosingCta
-        eyebrow="Start a Project"
-        headline="Have a space in mind?"
-        supporting="Tell us a little about your project and we'll be in touch."
-      />
     </main>
   );
 }

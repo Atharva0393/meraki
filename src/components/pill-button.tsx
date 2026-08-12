@@ -5,13 +5,19 @@ export function PillButton({
   children,
   className = "",
   type,
+  variant = "clay",
 }: {
   href?: string;
   children: React.ReactNode;
   className?: string;
   type?: "submit" | "button";
+  variant?: "clay" | "black";
 }) {
-  const classes = `inline-flex items-center justify-center gap-2 rounded-full bg-clay px-7 py-3.5 text-sm font-medium text-ivory transition-all duration-200 ease-out hover:-translate-y-px hover:bg-charcoal active:translate-y-0 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-charcoal ${className}`;
+  const fill =
+    variant === "black"
+      ? "bg-charcoal hover:bg-clay"
+      : "bg-clay hover:bg-charcoal";
+  const classes = `inline-flex items-center justify-center gap-2 rounded-full ${fill} px-7 py-3.5 text-sm font-medium text-ivory transition-all duration-200 ease-out hover:-translate-y-px active:translate-y-0 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-charcoal ${className}`;
 
   if (href) {
     return (

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { SiteHeader } from "@/components/site-header";
 import { PageHero } from "@/components/page-hero";
 import { NumberedList } from "@/components/numbered-list";
-import { ClosingCta } from "@/components/closing-cta";
 
 export const metadata: Metadata = {
   title: "Services — Meraki Designs",
@@ -43,7 +42,6 @@ export default function ServicesPage() {
       <SiteHeader />
       <PageHero eyebrow="Services" headline="From first idea to finished space." />
       <NumberedList items={services} />
-      <ClosingCta headline="Have a project in mind?" />
     </main>
   );
 }

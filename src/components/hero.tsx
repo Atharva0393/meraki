@@ -43,7 +43,7 @@ export function Hero() {
               </p>
               <a
                 href="/contact"
-                className="mt-6 inline-flex items-center justify-center rounded-full bg-clay px-7 py-3.5 text-sm font-medium text-ivory transition-colors duration-200 ease-out hover:bg-charcoal focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-charcoal"
+                className="mt-6 inline-flex items-center justify-center rounded-full bg-charcoal px-7 py-3.5 text-sm font-medium text-ivory transition-colors duration-200 ease-out hover:bg-clay focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-charcoal"
               >
                 Start a Project
               </a>
@@ -74,7 +74,7 @@ export function Hero() {
           <div className="animate-fade-up mt-8 [animation-delay:270ms]">
             <a
               href="/contact"
-              className="inline-flex items-center justify-center rounded-full bg-clay px-7 py-3.5 text-sm font-medium text-ivory transition-colors duration-200 ease-out hover:bg-charcoal focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-charcoal"
+              className="inline-flex items-center justify-center rounded-full bg-charcoal px-7 py-3.5 text-sm font-medium text-ivory transition-colors duration-200 ease-out hover:bg-clay focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-charcoal"
             >
               Start a Project
             </a>
