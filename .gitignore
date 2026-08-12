@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# raw, untouched source image for the hero (15MB, not used at runtime —
+# the processed asset lives at public/images/hero/hero-home.webp)
+/bgimage.png

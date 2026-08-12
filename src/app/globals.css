@@ -1,26 +1,158 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --color-ivory: #f6f1ea;
+  --color-stone: #ede6da;
+  --color-charcoal: #211f1c;
+  --color-ink: #1c1a17;
+  --color-clay: #a9673f;
+  --color-warm-grey: #6b655c;
+  --color-hairline: #ded5c4;
+
+  /*
+   * shadcn/ui semantic tokens, mapped onto the palette above instead of
+   * shadcn's generic defaults. Any shadcn component dropped into
+   * src/components/ui (bg-card, text-foreground, bg-primary, border, etc.)
+   * will render in Meraki's actual brand colors rather than default
+   * black/white/blue. Update these mappings, not individual components,
+   * if the palette changes.
+   */
+  --background: var(--color-ivory);
+  --foreground: var(--color-ink);
+  --card: var(--color-ivory);
+  --card-foreground: var(--color-ink);
+  --primary: var(--color-clay);
+  --primary-foreground: var(--color-ivory);
+  --secondary: var(--color-stone);
+  --secondary-foreground: var(--color-ink);
+  --muted: var(--color-stone);
+  --muted-foreground: var(--color-warm-grey);
+  --accent: var(--color-stone);
+  --accent-foreground: var(--color-ink);
+  --border: var(--color-hairline);
+  --input: var(--color-hairline);
+  --ring: var(--color-clay);
 }
 
 @theme inline {
+  --color-ivory: var(--color-ivory);
+  --color-stone: var(--color-stone);
+  --color-charcoal: var(--color-charcoal);
+  --color-ink: var(--color-ink);
+  --color-clay: var(--color-clay);
+  --color-warm-grey: var(--color-warm-grey);
+  --color-hairline: var(--color-hairline);
+  --font-serif: var(--font-fraunces);
+  --font-sans: var(--font-inter);
+
+  /* shadcn/ui aliases -> Tailwind utilities (bg-card, text-foreground, etc.) */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-ivory);
+  color: var(--color-ink);
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes reveal-image {
+  from {
+    opacity: 0;
+    transform: scale(1.02);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 800ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-reveal-image {
+  animation: reveal-image 1100ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes page-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/*
+ * Opacity-only: a `transform` here (even at an identity value left behind by
+ * fill-mode) would make this wrapper a containing block for any
+ * `position: fixed` descendant (e.g. the mobile nav overlay), breaking it
+ * sitewide. Keep this animation transform-free.
+ */
+.animate-page-fade {
+  animation: page-fade 400ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Scroll-triggered reveal (toggled by the Reveal component via IntersectionObserver) */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 700ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-scale {
+  opacity: 0;
+  transform: scale(1.04);
+  transition:
+    opacity 900ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 900ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-scale.is-visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up,
+  .animate-reveal-image,
+  .animate-page-fade,
+  .reveal,
+  .reveal-scale {
+    animation: none;
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
 }
