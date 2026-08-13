@@ -53,8 +53,16 @@ Governing principle: **less, but better.**
   a dominant fill
 - Secondary text: warm grey (`--color-warm-grey: #6b655c`)
 - Dividers: hairline (`--color-hairline: #ded5c4`)
-- Type: **Fraunces** (editorial serif, headlines) + **Inter** (sans, body/UI),
-  loaded via `next/font/google` in `src/app/layout.tsx`
+- Type: **Fraunces** (editorial serif, display headlines — `font-serif`) +
+  **Jost** (geometric sans, nav/UI/labels/body — `font-sans`, the default),
+  loaded via `next/font/google` in `src/app/layout.tsx`. **Jost replaced
+  Inter** per explicit client feedback ("sleek font... Century Gothic k
+  jaisa") — Jost is a true geometric sans from the same design lineage as
+  Century Gothic/Futura (circular o's, single-story a), chosen specifically
+  to avoid both literally using Century Gothic (not a web font) and the
+  generic-agency Poppins/Montserrat route. If asked to touch typography
+  again, this is the current baseline — don't reintroduce Inter without a
+  reason.
 - Generous whitespace, thin borders/dividers, pill-shaped buttons and tags.
   Rounded corners used selectively (buttons, tags, the hero's own card
   frame) — the site should still read as editorial, not card-based.
@@ -98,27 +106,72 @@ Button convention (already implemented, see `pill-button.tsx`,
 |---|---|---|
 | `/` | `src/app/page.tsx` | Hero + Selected Projects teaser |
 | `/work` | `src/app/work/page.tsx` | Editorial hero + coverflow project carousel (`components/ui/coverflow-carousel.tsx`) + project index |
+| `/about` | `src/app/about/page.tsx` | Full editorial redesign (client feedback, see below) — 7 sections: intro, asymmetric visual grid (4 cards, real project photos), Approach (`NumberedList`, 4 items), Founder (2-col, "Founded by Aatif Shaikh"), Values (4-item manifesto grid, distinct from Approach's treatment), Trust (real services list, no fabricated testimonials), final CTA |
 | `/projects` | `src/app/projects/page.tsx` | PageHero + ProjectGallery (all 3 projects, asymmetric editorial layout) — **orphaned**: no longer linked from nav or footer (superseded by `/work`), but still built and reachable directly |
 | `/projects/[slug]` | `src/app/projects/[slug]/page.tsx` | Placeholder detail page per project (statically generated via `generateStaticParams`) |
 | `/services` | `src/app/services/page.tsx` | PageHero + 4-service NumberedList |
-| `/contact` | `src/app/contact/page.tsx` | PageHero + ContactForm + contact-info block |
+| `/contact` | `src/app/contact/page.tsx` | Redesigned (client reference image, translated not copied) — a single `rounded-[2rem]` **stone** panel holding a 2-col split: left = eyebrow + `<h1>` + supporting copy + contact details; right = the `ContactForm` as an **ivory card**. **No `PageHero`** — its copy was deliberately absorbed into the panel's left column to avoid saying "Let's discuss your project" twice. This makes `/contact` the only interior page without `PageHero`; that's intentional, not an oversight. |
 
-**`/studio` was deleted** (explicit user instruction) — the route, its page
-file, and `studio-intro.tsx` (the homepage's "The Studio" section) are gone.
-If you see a reference to either in an older note, it's stale.
+**`/studio` was deleted** (explicit user instruction, earlier session) —
+the route, its page file, and `studio-intro.tsx` (the homepage's "The
+Studio" section) are gone. **A later round of client feedback listed
+"Studio" in the desired nav** — the user explicitly chose to leave it
+omitted rather than recreate it (no content was ever specified for it).
+If asked again, that's a deliberate, twice-confirmed decision, not an
+oversight — don't recreate `/studio` without fresh, explicit instruction
+and real content to put on it.
 
-Navbar (`src/components/navbar.tsx`): logo → `/`, links → Work/Services/
-Contact, primary CTA "Start a Project" → `/contact` (black, see §3).
-Active-page underline indicator. Full-screen mobile menu (see §7).
+Navbar (`src/components/navbar.tsx`): logo → `/`, links → Work/About/
+Services/Contact, primary CTA "Start a Project" → `/contact` (black, see
+§3). Wordmark is mixed-typeface: "Meraki" stays `font-serif` (Fraunces),
+"Designs" is `font-sans italic` (Jost) — deliberate contrast, not a bug if
+they look like different fonts side by side. Active-page underline
+indicator. Full-screen mobile menu (see §7).
 
 **Footer** (`src/components/footer.tsx`) — built, mounted once in
 `src/app/layout.tsx` as a sibling after `PageTransition` (so it persists
 across route changes without re-triggering the page-fade). Dark charcoal
 upper field with an asymmetric roofline `clip-path`, an oversized ivory CTA
-panel overlapping it, contact placeholders, a real Instagram link, and a
-minimal bottom bar. `ClosingCta` (`closing-cta.tsx`) was retired in favour
-of this — it's still in the tree but unused everywhere; treat it as dead
-code, not a live pattern.
+panel overlapping it, real contact details (email/phone as functional
+`mailto:`/`tel:` links, see §8), a real Instagram link, and a minimal
+bottom bar. Nav list: Work/About/Services/Contact. `ClosingCta`
+(`closing-cta.tsx`) was retired in favour of this — it's still in the tree
+but unused everywhere; treat it as dead code, not a live pattern.
+
+**`/about` redesign (client feedback, visual reference provided — not
+copied literally, translated into Meraki's own system):** 7 sections —
+intro (custom two-line headline, not `PageHero`, to control the `<br/>`
+break), an asymmetric 4-card visual grid (12-col, same pattern as
+`selected-projects.tsx`'s dominant+staggered layout; large + wide feature
+cards link to `/work` and reuse `projects.ts` images — `contemporary-
+residence` and `the-modern-extension`, chosen for visual contrast, not
+random), Approach (`NumberedList`, 4 items: Context/Clarity/Craft/
+Longevity — reuses the component's built-in hover behaviour as-is), a
+2-column Founder section ("Founded by Aatif Shaikh," name only, portrait
+is a bare stone panel — no fabricated photo of a real person), Values (4
+items, **deliberately a different visual treatment** from Approach —
+large faint numerals in a grid, not horizontal rows — so the two
+numbered sections don't read as repetitive), Trust (real service names
+pulled from `/services`, **no fabricated testimonials** — the reference
+image's testimonial section has no real counterpart here and wasn't
+invented one), and a final CTA (text + button, deliberately not a bordered
+panel, so it doesn't visually duplicate the footer's own CTA panel
+immediately below it).
+
+**`contact-form.tsx` field styling changed (same client-reference pass):**
+fields went from the old minimal *underline* treatment to **filled**
+inputs — `rounded-xl bg-stone` with the label above, no bottom-border
+animation. The tonal ladder is deliberate: **stone panel → ivory form card
+→ stone fields**, which is what makes the inputs read as a distinct
+surface without borders doing the work. Two consequences worth knowing:
+the old `peer`/`peer-focus` underline classes are gone (that's the
+`:focus`-underline CSS §7.1 said was verified-by-reading — it no longer
+exists, so that note is now moot), and the `<select>` needed its own
+inline chevron SVG once `appearance-none` was applied. Icons were
+**deliberately not added** to the contact details despite the reference
+showing envelope/phone icons — §2's "no decorative icons" rule won, and
+the user confirmed that choice. "Send Enquiry" stays **clay**, per §3 —
+it is not a "Start a Project" button.
 
 ---
 
@@ -265,16 +318,40 @@ Where motion was added:
    instance. If you ever add more stateful IDs to `Navbar`, remember it can
    mount more than once per page.
 
-### Known testing-environment limitation (not an app bug)
-The `:focus` pseudo-class could not be reliably triggered via this
-session's browser-automation tooling (`element.focus()` updates
-`document.activeElement` but doesn't always trigger real CSS `:focus`
-matching in that environment; real click-to-focus was also unreliable
-there). The contact form's focus-underline CSS was verified correct by
-reading the compiled Tailwind output directly (correct selector, correct
-specificity) rather than by a live screenshot. If a fresh session has a
-working browser tool, it's worth a quick real visual check, but there's no
-reason to suspect the CSS itself is wrong.
+### Known testing-environment limitations (not app bugs)
+1. The `:focus` pseudo-class could not be reliably triggered via this
+   session's browser-automation tooling (`element.focus()` updates
+   `document.activeElement` but doesn't always trigger real CSS `:focus`
+   matching in that environment; real click-to-focus was also unreliable
+   there). The contact form's focus-underline CSS was verified correct by
+   reading the compiled Tailwind output directly (correct selector, correct
+   specificity) rather than by a live screenshot.
+
+2. **`IntersectionObserver` does not fire in this session's
+   browser-automation tool at all**, confirmed with a raw, vanilla
+   `IntersectionObserver` unrelated to any app code (observed an `<h1>`
+   already in the initial viewport, never fired within a 2s timeout). This
+   makes `Reveal`'s scroll-triggered `.is-visible` toggle untestable via
+   screenshot/automation in that environment — every `.reveal`/
+   `.reveal-scale` element stays at its pre-reveal opacity/transform
+   indefinitely, on every page, not just new ones. This is **not a
+   regression and not specific to any component** — it reproduced
+   identically on the homepage hero (unrelated, untouched code) in the same
+   session. To verify content/layout visually despite this, a `<style>`
+   override forcing `.reveal, .reveal-scale { opacity:1 !important;
+   transform:none !important; }` was injected client-side for screenshots
+   — reversible, verification-only, never committed. If a fresh session's
+   browser tool has working `IntersectionObserver`, this won't reproduce.
+
+3. **`next dev` (Turbopack) can throw `Module not found:
+   '@vercel/turbopack-next/internal/font/google/font'`** for every
+   `next/font/google` font, independent of which fonts are configured
+   (reproduced with Fraunces alone, untouched by that session's edits) —
+   the package is genuinely absent from `node_modules` in this
+   environment, and `npm install` did not restore it. `next build` +
+   `next start` are unaffected (different code path) and were used for
+   verification instead. If `next dev` throws this, don't assume the font
+   config is wrong — check `ls node_modules/@vercel` first.
 
 ---
 
@@ -326,13 +403,26 @@ copy inside `selected-projects.tsx`) falls back to a stone-colored
 placeholder with a large faint serif numeral + "Photography to follow" —
 keep that fallback pattern, don't delete it.
 
-Contact page (`src/app/contact/page.tsx`) placeholders, same rule —
-**never invent real contact details**:
+Contact info — **status change, client feedback, verified real (not
+placeholder anymore)**:
 ```
-Email:    [Add email address]
-Phone:    [Add phone number]
-Location: Derby, United Kingdom   ← this one is real/given, not a placeholder
+Email:    info@merakidesignz.co.uk   — real, functional mailto: link
+Phone:    +44 7587 996832            — real, functional tel: link
+Location: Derby, United Kingdom      — real (concise; homepage/footer use this)
+Address:  [ADD VERIFIED STUDIO ADDRESS]  — still a placeholder, Contact page only
 ```
+Email + Phone render as links on both `src/app/contact/page.tsx` and
+`src/components/footer.tsx` (each file keeps its own local
+`contactDetails` array — not shared, same pattern as `projects.ts`
+consumers). The **full street address was never provided** and must not be
+guessed — the placeholder stays until a real one arrives, and it only
+appears on `/contact` (the client specified that page specifically;
+homepage/footer correctly stay at the concise "Derby, UK" level).
+
+"Founded by Aatif Shaikh" appears once, on `/about` only, name only — no
+title, no "Ar." prefix, no credential claim (e.g. "architect",
+"recognised architect"). This was explicit, deliberate client correction —
+don't add a title/role unless the client gives one.
 
 ---
 
@@ -373,16 +463,17 @@ prompts, clean and premium execution over technical completeness.**
 
 | Area | Status |
 |---|---|
-| Foundation (Next.js/TS/Tailwind setup, fonts, tokens) | Complete |
+| Foundation (Next.js/TS/Tailwind setup, fonts, tokens) | Complete — sans is Jost, not Inter (see §2) |
 | Homepage hero | **Approved** — do not redesign without explicit ask |
 | Homepage Selected-projects teaser | Built, motion-polished, real (stock) imagery, `max-w-[90%]` + `rounded-2xl` |
-| `/studio` | **Deleted** — route, page, and `studio-intro.tsx` all removed |
+| `/studio` | **Deleted**, and a later client-feedback request to re-add it to nav was explicitly declined (see §4) |
+| `/about` | Built — client-feedback addition, see §4 |
 | `/work` | Built — coverflow carousel, real (stock) imagery |
 | `/projects` + `/projects/[slug]` | Built, motion-polished, real (stock) imagery — `/projects` itself is orphaned from nav (see §4) |
 | `/services` | Built, motion-polished |
-| `/contact` | Built, motion-polished (form is client-side only — no backend/email wiring exists yet) |
-| Navbar | Built — Work/Services/Contact, sticky (interior pages), mobile menu, active state, hover motion |
-| Footer | Built — see §4 |
+| `/contact` | Redesigned two-column panel (see §4), real email/phone as `mailto:`/`tel:` links, address placeholder (see §8) — form is still client-side only, no backend/email wiring |
+| Navbar | Built — Work/About/Services/Contact, mixed-typeface wordmark (Fraunces + italic Jost), sticky (interior pages), mobile menu, active state, hover motion |
+| Footer | Built — see §4, real contact links |
 | Sitewide motion system | Built and verified (§7) — not a pending task |
 | Contact form backend | **Not built** — submitting shows a client-side "Thank you" state only; nothing is actually sent anywhere |
 
@@ -390,6 +481,9 @@ prompts, clean and premium execution over technical completeness.**
 - Real contact form submission (needs an API route or third-party form
   service — will require picking an approach with the user first)
 - Real project photography to replace the stock images (§8)
+- **The verified full studio street address** — `/contact` currently shows
+  `[ADD VERIFIED STUDIO ADDRESS]` because it was never provided. Swap it in
+  the moment it's confirmed; don't guess it even to "unblock" the page.
 - Fixing the `#work` dead anchor if it still exists in `hero.tsx` — worth a
   grep, this note has been stale before
 - Deciding whether the orphaned `/projects` route should be removed,

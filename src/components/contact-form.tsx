@@ -3,29 +3,30 @@
 import { useState, type FormEvent } from "react";
 import { PillButton } from "@/components/pill-button";
 
+/**
+ * Filled fields sitting on the ivory form card — the tonal ladder is
+ * stone panel → ivory card → stone fields, which is how this reads as a
+ * distinct input surface without borders doing the work.
+ */
 const fieldClasses =
-  "peer w-full border-b border-hairline bg-transparent py-3 text-base text-charcoal placeholder:text-warm-grey/60 transition-colors duration-300 ease-out focus:outline-none";
+  "w-full rounded-xl border border-transparent bg-stone px-4 py-3 text-base text-charcoal placeholder:text-warm-grey/60 transition-colors duration-200 ease-out focus:border-charcoal/25 focus:outline-none";
 
 const labelClasses =
-  "text-xs font-medium uppercase tracking-[0.2em] text-warm-grey transition-colors duration-300 ease-out peer-focus:text-charcoal";
-
-const underlineClasses =
-  "pointer-events-none absolute inset-x-0 bottom-0 h-px origin-center scale-x-0 bg-charcoal transition-transform duration-300 ease-out peer-focus:scale-x-100";
+  "text-xs font-medium uppercase tracking-[0.2em] text-warm-grey";
 
 function Field({
   label,
   children,
+  className = "",
 }: {
   label: string;
   children: React.ReactNode;
+  className?: string;
 }) {
   return (
-    <label className="flex flex-col gap-2">
+    <label className={`flex flex-col gap-2.5 ${className}`}>
       <span className={labelClasses}>{label}</span>
-      <div className="relative">
-        {children}
-        <span aria-hidden className={underlineClasses} />
-      </div>
+      {children}
     </label>
   );
 }
@@ -40,7 +41,7 @@ export function ContactForm() {
 
   if (submitted) {
     return (
-      <div className="animate-fade-up border-t border-hairline pt-8">
+      <div className="animate-fade-up rounded-2xl border border-hairline bg-ivory px-8 py-12 sm:px-10 sm:py-14">
         <p className="font-serif text-2xl text-charcoal">Thank you.</p>
         <p className="mt-3 max-w-sm text-base leading-relaxed text-warm-grey">
           We&apos;ve received your enquiry and will be in touch shortly.
@@ -50,8 +51,11 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-10">
-      <div className="grid gap-x-8 gap-y-8 sm:grid-cols-2">
+    <form
+      onSubmit={handleSubmit}
+      className="rounded-2xl border border-hairline bg-ivory px-6 py-8 sm:px-8 sm:py-10"
+    >
+      <div className="grid gap-x-6 gap-y-6 sm:grid-cols-2">
         <Field label="Name">
           <input
             type="text"
@@ -82,47 +86,61 @@ export function ContactForm() {
         </Field>
 
         <Field label="Project Type">
-          <select
-            name="projectType"
-            defaultValue=""
-            className={`${fieldClasses} appearance-none`}
-          >
-            <option value="" disabled>
-              Select an option
-            </option>
-            <option value="new-build">New Build</option>
-            <option value="extension">Extension</option>
-            <option value="refurbishment">Refurbishment</option>
-            <option value="property-development">Property Development</option>
-            <option value="other">Other</option>
-          </select>
+          <div className="relative">
+            <select
+              name="projectType"
+              defaultValue=""
+              className={`${fieldClasses} appearance-none pr-10`}
+            >
+              <option value="" disabled>
+                Select an option
+              </option>
+              <option value="new-build">New Build</option>
+              <option value="extension">Extension</option>
+              <option value="refurbishment">Refurbishment</option>
+              <option value="property-development">
+                Property Development
+              </option>
+              <option value="other">Other</option>
+            </select>
+            <svg
+              aria-hidden
+              viewBox="0 0 12 8"
+              className="pointer-events-none absolute right-4 top-1/2 h-2 w-3 -translate-y-1/2 text-warm-grey"
+            >
+              <path
+                d="M1 1.5 6 6.5 11 1.5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
         </Field>
 
-        <div className="sm:col-span-2">
-          <Field label="Location">
-            <input
-              type="text"
-              name="location"
-              className={fieldClasses}
-              placeholder="Where is the project located?"
-            />
-          </Field>
-        </div>
+        <Field label="Location" className="sm:col-span-2">
+          <input
+            type="text"
+            name="location"
+            className={fieldClasses}
+            placeholder="Where is the project located?"
+          />
+        </Field>
 
-        <div className="sm:col-span-2">
-          <Field label="Tell us about your project">
-            <textarea
-              name="message"
-              required
-              rows={5}
-              className={`${fieldClasses} resize-none`}
-              placeholder="Share a little about what you have in mind"
-            />
-          </Field>
-        </div>
+        <Field label="Tell us about your project" className="sm:col-span-2">
+          <textarea
+            name="message"
+            required
+            rows={5}
+            className={`${fieldClasses} resize-none`}
+            placeholder="Share a little about what you have in mind"
+          />
+        </Field>
       </div>
 
-      <PillButton type="submit" className="w-fit">
+      <PillButton type="submit" className="mt-8 w-full sm:w-fit">
         Send Enquiry →
       </PillButton>
     </form>

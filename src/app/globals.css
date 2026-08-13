@@ -43,7 +43,7 @@
   --color-warm-grey: var(--color-warm-grey);
   --color-hairline: var(--color-hairline);
   --font-serif: var(--font-fraunces);
-  --font-sans: var(--font-inter);
+  --font-sans: var(--font-jost);
 
   /* shadcn/ui aliases -> Tailwind utilities (bg-card, text-foreground, etc.) */
   --color-background: var(--background);

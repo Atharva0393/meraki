@@ -5,13 +5,22 @@ import { Reveal } from "@/components/reveal";
 
 const navLinks = [
   { label: "Work", href: "/work" },
+  { label: "About", href: "/about" },
   { label: "Services", href: "/services" },
   { label: "Contact", href: "/contact" },
 ];
 
 const contactDetails = [
-  { label: "Email", value: "[Add email address]" },
-  { label: "Phone", value: "[Add phone number]" },
+  {
+    label: "Email",
+    value: "info@merakidesignz.co.uk",
+    href: "mailto:info@merakidesignz.co.uk",
+  },
+  {
+    label: "Phone",
+    value: "+44 7587 996832",
+    href: "tel:+447587996832",
+  },
   { label: "Location", value: "Derby, United Kingdom" },
 ];
 
@@ -87,9 +96,18 @@ export function Footer() {
                       <p className="text-xs font-medium uppercase tracking-[0.2em] text-warm-grey">
                         {detail.label}
                       </p>
-                      <p className="mt-1.5 font-serif text-lg text-charcoal">
-                        {detail.value}
-                      </p>
+                      {detail.href ? (
+                        <a
+                          href={detail.href}
+                          className="mt-1.5 inline-block font-serif text-lg text-charcoal transition-colors duration-200 ease-out hover:text-clay focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-charcoal"
+                        >
+                          {detail.value}
+                        </a>
+                      ) : (
+                        <p className="mt-1.5 font-serif text-lg text-charcoal">
+                          {detail.value}
+                        </p>
+                      )}
                     </div>
                   ))}
 

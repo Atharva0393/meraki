@@ -13,7 +13,7 @@ export function Hero() {
           <div className="mt-8 flex flex-col items-center text-center">
             <p className="animate-fade-up flex items-center gap-3 text-xs font-medium uppercase tracking-[0.28em] text-warm-grey">
               <span aria-hidden className="h-px w-8 bg-clay" />
-              Meraki Designs — Derby, UK
+              Meraki Designs
               <span aria-hidden className="h-px w-8 bg-clay" />
             </p>
 
@@ -57,7 +57,7 @@ export function Hero() {
 
           <p className="animate-fade-up mt-8 flex items-center gap-3 text-xs font-medium uppercase tracking-[0.22em] text-warm-grey">
             <span aria-hidden className="h-px w-8 bg-clay" />
-            Meraki Designs — Derby, UK
+            Meraki Designs
           </p>
 
           <h1 className="animate-fade-up mt-6 font-serif text-[clamp(2.5rem,10vw,3.75rem)] leading-[1.05] tracking-[-0.01em] text-charcoal [animation-delay:90ms]">

@@ -6,6 +6,7 @@ import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 
 const navLinks = [
   { label: "Work", href: "/work" },
+  { label: "About", href: "/about" },
   { label: "Services", href: "/services" },
   { label: "Contact", href: "/contact" },
 ];
@@ -66,9 +67,9 @@ export function Navbar() {
     <header className="relative z-20 flex items-center justify-between">
       <Link
         href="/"
-        className="relative z-40 font-serif text-lg tracking-tight text-charcoal transition-colors duration-200 ease-out hover:text-clay focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-charcoal"
+        className="relative z-40 font-sans text-lg tracking-tight text-charcoal transition-colors duration-200 ease-out hover:text-clay focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-charcoal"
       >
-        Meraki <span className="font-normal italic">Designs</span>
+        Meraki Designs
       </Link>
 
       <nav
